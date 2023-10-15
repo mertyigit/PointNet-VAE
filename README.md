@@ -1,8 +1,6 @@
 # PointNet-VAE
 A Variational PointNet Encoder Decoder for 3D Point Cloud data. 
 
-I train this model in my free time and adding some capabilities. 
-
 ENCODING:
 Currently implemented encoding options:
     1) PointNet++;
