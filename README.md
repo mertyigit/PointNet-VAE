@@ -32,7 +32,7 @@ To get started with my advanced Variational PointNet Encoder-Decoder, please ref
 
 I welcome contributions and feedback from the community. If you have ideas, suggestions, or want to contribute to this project, please see the [Contribution Guidelines](link-to-contribution-guidelines).
 
-For any issues or questions, feel free to open an [Issue](link-to-issues) or reach out to the community on [Discussions](link-to-discussions).
+For any issues or questions, feel free to open an [Issue](https://github.com/mertyigit/PointNet-VAE/issues)
 
 **Join me in advancing the field of 3D point cloud processing and generation!**
 
