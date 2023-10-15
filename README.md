@@ -4,6 +4,7 @@ Welcome to the advanced Variational PointNet Encoder-Decoder repository! This pr
 
 [![Python](https://img.shields.io/badge/Python-3.6%2B-blue)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-1.8%2B-orange)](https://pytorch.org/)
+[![GitHub License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 ## Encoding Options
 
@@ -39,4 +40,4 @@ For any issues or questions, feel free to open an [Issue](https://github.com/mer
 
 **Join me in advancing the field of 3D point cloud processing and generation!**
 
-[![GitHub License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
