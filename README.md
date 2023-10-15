@@ -30,14 +30,10 @@ Welcome to the Variational PointNet Encoder-Decoder repository! This project rep
 
 ## Get Started
 
-To get started with my advanced Variational PointNet Encoder-Decoder, please refer to the documentation and instructions in the [Wiki](link-to-wiki) section.
+To get started with my advanced Variational PointNet Encoder-Decoder, please refer to the documentation and instructions in the [Wiki](link-to-wiki) section. (under development)
 
 ## Contribution and Support
 
-I welcome contributions and feedback from the community. If you have ideas, suggestions, or want to contribute to this project, please see the [Contribution Guidelines](link-to-contribution-guidelines).
-
 For any issues or questions, feel free to open an [Issue](https://github.com/mertyigit/PointNet-VAE/issues)
-
-**Join me in advancing the field of 3D point cloud processing and generation!**
 
 
