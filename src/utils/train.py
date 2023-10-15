@@ -1,7 +1,12 @@
+'''
+Developed from scrtach by Mert Sengul.
+Please cite the repo if you readapt.
+'''
+
 import torch
 
 
-class Trainer(nn.Module):
+class Trainer:
     '''
     Trainer object.
     '''
