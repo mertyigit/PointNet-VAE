@@ -2,6 +2,9 @@
 
 Welcome to the advanced Variational PointNet Encoder-Decoder repository! This project represents my endeavor to create a solution for processing and generating 3D point cloud data. It offers a range of encoding and decoding options to suit various application needs.
 
+[![Python](https://img.shields.io/badge/Python-3.6%2B-blue)](https://www.python.org/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-1.8%2B-orange)](https://pytorch.org/)
+
 ## Encoding Options
 
 **1. PointNet++**
