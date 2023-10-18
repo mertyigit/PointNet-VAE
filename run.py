@@ -32,11 +32,13 @@ sys.path.append('../src')
 
 from models.utils import PointsTo3DShape
 from models.PointNetEncoder import PointNetBackbone
-from models.point_net_loss import ChamferDistanceLoss
+from utils.calculate_loss import ChamferDistanceLoss
 from models.PointCloudEncoder import PointCloudEncoder
 from models.PointCloudDecoder import PointCloudDecoder, PointCloudDecoderSelf, PointCloudDecoderMLP
 from models.AutoEncoder import AutoEncoder
 from models.VAE import VAE
+from data.dataset import DataModelNet
+from utils.utils import *
 
 from tqdm import tqdm
 
