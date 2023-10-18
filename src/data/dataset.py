@@ -29,7 +29,7 @@ class MyDataset(Dataset):
         pass
 
 
-class ModelNet(LightningDataModule):
+class DataModelNet(LightningDataModule):
     """
     PyTorch Lightning data module 
 
@@ -45,11 +45,11 @@ class ModelNet(LightningDataModule):
     def __init__(
         self,
         data_path: str,
+        pre_transform,
         train_batch_size: int = 8,
         val_batch_size: int = 8,
-        train_num_points: 1024,
-        val_num_points: 1024,
-        pre_transform,
+        train_num_points: int = 1024,
+        val_num_points: int = 1024,
         **kwargs,
     ):
         super().__init__()
@@ -62,7 +62,7 @@ class ModelNet(LightningDataModule):
         self.pre_transform = pre_transform
 
     def setup(self, stage: Optional[str] = None) -> None:
-        train_dataset = ModelNet(
+        self.train_dataset = ModelNet(
                             root=self.data_path,
                             name=self.data_path[-2:],
                             train=True,
@@ -70,7 +70,7 @@ class ModelNet(LightningDataModule):
                             transform=T.SamplePoints(self.train_num_points),
         )
         
-        val_dataset = ModelNet(
+        self.val_dataset = ModelNet(
                             root=self.data_path,
                             name=self.data_path[-2:],
                             train=False,
@@ -80,14 +80,14 @@ class ModelNet(LightningDataModule):
         
     def train_dataloader(self) -> DataLoader:
         return DataLoader(
-                    train_dataset,
+                    self.train_dataset,
                     batch_size=self.train_batch_size,
                     shuffle=True,
         )
 
     def val_dataloader(self) -> DataLoader:
         return DataLoader(
-                    val_dataset,
+                    self.val_dataset,
                     batch_size=self.val_batch_size,
                     shuffle=False,
         )

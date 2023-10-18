@@ -54,7 +54,7 @@ class PointCloudEncoder(nn.Module):
         x = x.view(x.size(0), -1)
         x = nn.functional.relu(self.bn_fc1(self.fc1(x)))
 
-        return x
+        return x, point_feat, None
 
 
 # Test 
