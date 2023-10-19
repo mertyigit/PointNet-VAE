@@ -29,7 +29,7 @@ class MyDataset(Dataset):
         pass
 
 
-class DataModelNet(LightningDataModule):
+class DataModelNet():
     """
     PyTorch Lightning data module 
 

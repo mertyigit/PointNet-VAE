@@ -22,7 +22,9 @@ class Trainer:
         checkpoint,
         experiment,
         device,
+        latent_dim,
         kl_loss_weight=None,
+        
     ):
 
         super().__init__()
@@ -35,6 +37,7 @@ class Trainer:
         self.checkpoint = checkpoint
         self.experiment = experiment
         self.device = device
+        self.latent_dim = latent_dim
         self.kl_loss_weight = kl_loss_weight
     
     def fit(self, train_loader, val_loader, epochs):
@@ -54,6 +57,7 @@ class Trainer:
         path = '{}/{}'.format(self.checkpoint, self.experiment)
         if not os.path.isdir(path):
             os.mkdir(path)
+        
         torch.save(self.model.state_dict(), '{}/checkpoint_{}.pth'.format(path, epoch))
 
     def _sanitizer(self, data):

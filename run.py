@@ -21,6 +21,8 @@ from torch.nn.functional import kl_div
 
 import open3d as o3
 
+import yaml
+import argparse
 
 import torch_geometric.transforms as T
 from torch_geometric.datasets import ModelNet
@@ -28,39 +30,41 @@ from torch_geometric.loader import DataLoader
 from torch_geometric.nn import MLP, fps, global_max_pool, radius
 from torch_geometric.nn.conv import PointConv
 
-sys.path.append('../src')
 
-from models.utils import PointsTo3DShape
-from models.PointNetEncoder import PointNetBackbone
-from utils.calculate_loss import ChamferDistanceLoss
-from models.PointCloudEncoder import PointCloudEncoder
-from models.PointCloudDecoder import PointCloudDecoder, PointCloudDecoderSelf, PointCloudDecoderMLP
-from models.AutoEncoder import AutoEncoder
-from models.VAE import VAE
-from data.dataset import DataModelNet
-from utils.utils import *
+from src.models.PointNetEncoder import PointNetBackbone
+from src.utils.calculate_loss import ChamferDistanceLoss
+from src.models.PointCloudEncoder import PointCloudEncoder
+from src.models.PointCloudDecoder import PointCloudDecoder, PointCloudDecoderSelf, PointCloudDecoderMLP
+from src.models.AutoEncoder import AutoEncoder
+from src.models.VAE import VAE
+from src.data.dataset import DataModelNet
+from src.utils.utils import *
+from src.utils.train import Trainer
 
 from tqdm import tqdm
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-%matplotlib inline
-
 
 ### HERE ARGS ###
-parser = argparse.ArgumentParser(description='Training Testing arguments')
+parser = argparse.ArgumentParser(description='Generic runner for VAE models')
 parser.add_argument('--config',  '-c',
                     dest="filename",
                     metavar='FILE',
-                    help =  'Path to config file.',
+                    help =  'path to the config file',
                     default='configs/vae.yaml')
 
 args = parser.parse_args()
+with open(args.filename, 'r') as file:
+    try:
+        config = yaml.safe_load(file)
+    except yaml.YAMLError as exc:
+        print(exc)
 
 #################
 
 ### REPRODUCIBILITY ###
-seed_everything(config['seed'], True)
+torch.seed = config['trainer_parameters']['manual_seed']
 #######################
 
 
@@ -69,39 +73,31 @@ print('MPS Availability: {}'.format(torch.backends.mps.is_available()))
 DEVICE = 'cuda' if torch.cuda.is_available() else 'mps'
 print('Device is set to :{}'.format(DEVICE))
 
-# General parameters
-#NUM_TRAIN_POINTS = 8192
-NUM_TEST_POINTS = 2048
-
-NUM_POINTS = 1024
-NUM_CLASSES = 16
 
 # model hyperparameters
-GLOBAL_FEATS = 1024
-BATCH_SIZE = 64
-
-EPOCHS = 1000
-LR = 0.0001
-REG_WEIGHT = 0.001 
-
-LATENT_DIM = 128
+EPOCHS = config['trainer_parameters']['epochs']
+LR = config['trainer_parameters']['lr']
+LATENT_DIM = config['model_parameters']['latent_dim']
+DEVICE = config['model_parameters']['device']
 
 #### LOAD DATA ####
-data = ModelNet(**config["data_parameters"])
+data = DataModelNet(**config["data_parameters"])
 data.setup()
 train_dataloader = data.train_dataloader()
 val_dataloader = data.val_dataloader()
 ###################
 
-model_run = Trainer(
-        model=vae(),
-        criterion=ChamferDistanceLoss(),
-        optimizer=optim.Adam(vae.parameters(), lr=0.001),
-        encoder_type='ConvolutionEncoder',
-        model_type='VAE',
-        checkpoint='./checkpoints',
-        experiment='trial',
-        device='mps',)
+encoder = PointCloudEncoder(latent_dim=LATENT_DIM, num_point=config['data_parameters']['train_num_points']).to(DEVICE)
+#encoder = PointNetBackbone(num_points=NUM_POINTS, num_global_feats=LATENT_DIM, local_feat=False).to(DEVICE)
+decoder = PointCloudDecoderMLP(latent_dim=LATENT_DIM, num_hidden=3, num_point=config['data_parameters']['train_num_points']).to(DEVICE)
+#autoencoder = AutoEncoder(encoder, decoder, device=DEVICE, latent_dim=LATENT_DIM).to(DEVICE)
+vae = VAE(encoder, decoder, device=DEVICE, latent_dim=LATENT_DIM).to(DEVICE)
+
+model_run = Trainer(model=vae, 
+                    criterion=ChamferDistanceLoss(),
+                    optimizer=optim.Adam(vae.parameters(), config['trainer_parameters']['lr']),
+                    **config['model_parameters']
+                    )
     
 model_run.fit(train_dataloader, val_dataloader, EPOCHS)
 
