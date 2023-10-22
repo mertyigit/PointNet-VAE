@@ -7,6 +7,7 @@ import torch
 from tqdm import tqdm
 import numpy as np
 import os
+import wandb
 
 class Trainer:
     '''
@@ -41,17 +42,30 @@ class Trainer:
         self.kl_loss_weight = kl_loss_weight
     
     def fit(self, train_loader, val_loader, epochs):
+        self._wandb_initiate()
         for epoch in tqdm(range(epochs)):
             # train
             train_loss, train_rc_loss, train_kl_loss = self._train(train_loader)
-            print('Epoch: {} - Loss: {} - Reconst Loss: {} - KL Loss: {}'.format(epoch, train_loss, train_rc_loss, train_kl_loss))
-            
+            #print('Epoch: {} - Loss: {} - Reconst Loss: {} - KL Loss: {}'.format(epoch, train_loss, train_rc_loss, train_kl_loss))
+            wandb.log({"Training Loss": train_loss, "Training Reconst Loss": train_rc_loss, "Training KL Loss": train_kl_loss})
             # validate
             val_loss, val_rc_loss, val_kl_loss = self._validate(val_loader)
-            print('Epoch: {} - Loss: {} - Reconst Loss: {} - KL Loss: {}'.format(epoch, val_loss, val_rc_loss, val_kl_loss))
-
+            #print('Epoch: {} - Loss: {} - Reconst Loss: {} - KL Loss: {}'.format(epoch, val_loss, val_rc_loss, val_kl_loss))
+            wandb.log({"Validation Loss": val_loss, "Validation Reconst Loss": val_rc_loss, "Validation KL Loss": val_kl_loss})
             #save model state
             self._save_checkpoint(train_loss, val_loss, epoch)
+
+    def _wandb_initiate(self):
+        #### W&B INIT ###
+        wandb.init(project=self.experiment)
+        wandb.watch(
+            self.model,
+            criterion=self.criterion,
+            log= 'parameters',#Optional[Literal['gradients', 'parameters', 'all']] = "gradients",
+            log_freq=100,
+            log_graph=True
+            )
+        ###############
 
     def _save_checkpoint(self, train_loss, val_loss, epoch):
         path = '{}/{}'.format(self.checkpoint, self.experiment)

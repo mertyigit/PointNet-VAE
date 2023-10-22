@@ -1,0 +1,23 @@
+model_parameters:
+  encoder_type: 'ConvolutionEncoder'
+  model_type: 'VAE'
+  checkpoint: './models/checkpoints'
+  experiment: 'PointNet-VAE'
+  device: 'mps'
+  latent_dim: 128
+  kl_loss_weight: 0.00001
+
+trainer_parameters:
+  lr: 0.00001
+  weight_decay: 0.0
+  manual_seed: 44
+  epochs: 1000
+
+data_parameters:
+  data_path: "../data/ModelNet10"
+  pre_transform: T.NormalizeScale()
+  train_batch_size: 16
+  val_batch_size:  16
+  train_num_points: 2048
+  val_num_points: 2048
+
